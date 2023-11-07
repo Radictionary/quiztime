@@ -1,0 +1,9 @@
+/.env
+/.prettierrc
+/.zshrc
+/archives.txt
+/frontend/node_modules
+/frontend/.DS_store
+
+#remove auto-generated tailwind css file which should be generated before running using "npm run build:css"
+/frontend/css/tailwind.css 

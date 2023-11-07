@@ -1,0 +1,58 @@
+{{template "base" .}} 
+{{define "content"}}
+<!-- Generate bg-green-500 and bg-yellow-500 styles from tailwind(tailwind zombies) -->
+<p class="bg-green-500 bg-yellow-500"></p>
+<button class="hidden bg-blue-400 p-5 rounded-xl absolute top-20 right-2" id="actionButton" onclick="action()">Start</button>
+<section class="m-5 text-center h-full" id="preGameLobby" style="background-size: cover">
+  <h1 class="text-center text-6xl font-bold">{{.Game.Name}}</h1>
+  <h1 class="absolute left-0 bottom-0 p-5 text-xl"><span class="text-lg">localhost:8080/join with </span>{{.Game.GameCode}}</h1>
+  <div class="relative top-36">
+    <div class="avatar-wrapper">
+      <img class="profile-pic" id="profilePicture" src="" />
+      <!-- The following will be used when changing profile picture will be allowed in the pregame lobby -->
+      <!-- <div class="upload-button">
+                <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+            </div>
+            <input class="file-upload" type="file" accept="image/*" /> -->
+    </div>
+    <h2 class="text-center text-3xl font-bold tracking-tight text-gray-900" id="userName"></h2>
+  </div>
+  {{if .GameAdmin}}
+  <h2 class="text-center text-lg font-bold tracking-tight text-gray-900 -mt-8">
+    You cannot change<br />
+    your name<br />
+    or profile as <br />game creator
+  </h2>
+  <br />
+  <div id="player-list" class="mt-32 flex flex-wrap bg-slate-300 p-7"><!-- Player items will be appended here --></div>
+  {{else}}
+  <h2 class="text-center text-lg font-bold tracking-tight text-gray-900 -mt-8">
+    You cannot change<br />
+    your name<br />
+    or profile while<br />
+    in the pre-game<br />
+    lobby
+  </h2>
+  {{end}}
+</section>
+<section class="m-5 text-center h-full hidden" id="gameContent" style="background-size: cover">
+  <h1 class="text-center text-6xl font-bold" id="gameTitle">{{.Game.Name}}</h1>
+  <h1 id="gameTimer" class="rounded-xl bg-slate-500 p-4 w-fit">Game Timer</h1>
+  <div class="relative top-20">
+    <h2 class="text-3xl font-bold" id="question">Question here</h2>
+    <div id="answerChoices" class="self-center text-center items-center origin-center grid grid-cols-2 gap-4 mt-5">
+      <!-- Answer choices will be dynamically inserted here -->
+    </div>
+  </div>
+</section>
+<!-- Scoreboard -->
+<section id="scoreboard" class="hidden m-5">
+  <h2 class="text-2xl font-bold text-center my-4">Scoreboard</h2>
+  <ul class="space-y-2">
+    <!-- Scoreboard entries will be added here dynamically -->
+  </ul>
+</section>
+{{end}} {{define "js"}}
+<link rel="stylesheet" href="/frontend/js/game.js">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+{{end}}

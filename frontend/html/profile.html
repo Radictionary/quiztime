@@ -1,0 +1,165 @@
+{{template "base" .}} {{define "head"}}
+<style>
+  .avatar-wrapper {
+    position: relative;
+    height: 200px;
+    width: 200px;
+    margin: 50px auto;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 1px 1px 15px -5px black;
+    transition: all .3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    &:hover .profile-pic {
+      opacity: .5;
+    }
+
+    .profile-pic {
+      height: 100%;
+      width: 100%;
+      transition: all .3s ease;
+
+      &:after {
+        font-family: FontAwesome;
+        content: "\f007";
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        font-size: 190px;
+        background: #ecf0f1;
+        color: #34495e;
+        text-align: center;
+      }
+    }
+
+    .upload-button {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+
+      .fa-arrow-circle-up {
+        position: absolute;
+        font-size: 234px;
+        top: -17px;
+        left: 0;
+        text-align: center;
+        opacity: 0;
+        transition: all .3s ease;
+        color: #34495e;
+      }
+
+      &:hover .fa-arrow-circle-up {
+        opacity: .9;
+      }
+    }
+  }
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+{{end}} {{define "content"}}
+<div class="min-h-full justify-center px-5 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w px-20 rounded-t-lg w-96 pt-1" style="background-color: #864cbf9b;">
+    <!-- <img class="mx-auto h-20 w-auto" src="/frontend/images/kahoot_icon_big.png" alt="Kahoot Icon" /> -->
+    <div class="avatar-wrapper">
+      <img class="profile-pic" src="" />
+      <div class="upload-button">
+        <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+      </div>
+      <input class="file-upload" type="file" accept="image/*" />
+    </div>
+    <h2 class="text-center text-3xl font-bold leading-9 tracking-tight text-gray-900">Profile</h2>
+  </div>
+
+  <div class="bg-[#864cbf] p-10 rounded-b-lg">
+    <div class="my-0 mx-0">
+      <label class="font-bold">Name:</label>
+      <span id="name-span" class="pr-3">{{index .Account.Name}}</span>
+      <input type="text" id="name-input" class="hidden ml-4 p-0" placeholder="{{index .Account.Name}}" />
+      <button class="inline-block bg-[#45a3e5] text-white p-1 rounded cursor-pointer" onclick="toggleEdit(this)">
+        <i class="bi bi-pencil-square"></i>
+      </button>
+    </div>
+
+    <div class="my-5 mx-0">
+      <label class="font-bold">Password:</label>
+      <span id="name-span" class="pr-3">{{index .Account.Password}}</span>
+      <input type="text" id="name-input" class="hidden ml-4" placeholder="{{index .Account.Password}}" disabled />
+    </div>
+    <button id="applyButton" class="p-2 bg-sky-300 rounded-md" onclick="applyChanges()">Apply</button>
+  </div>
+</div>
+<script src="/frontend/js/profile.js"></script>
+<script>
+  // const accountJSON = "{{index .AccountJSON}}" 
+  document.querySelector('.profile-pic').src = 'data:image/jpeg;base64,' + JSON.parse(accountJSON).profilePicture; // Adjust the image format as needed
+  const name = "{{index .Account.Name}}"
+</script>
+
+{{end}}
+{{define "js"}}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          // Update the image preview
+          document.querySelector('.profile-pic').src = e.target.result;
+
+          // Get the binary data
+          var binaryData = e.target.result.split(',')[1]; // Remove data:image/png;base64,
+
+          // Send the binary data to the backend
+          uploadImage(binaryData);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function uploadImage(binaryData) {
+      let account = JSON.parse(accountJSON)
+      account.profilePicture = binaryData
+
+      fetch('/accounts/' + account.name, {
+        method: 'Put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(account),
+      })
+        .then(response => {
+          if (response.ok) {
+            showNotification("Profile Updated")
+          } else {
+            // Handle errors
+            alert('Failed to upload the image.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    document.querySelector('.file-upload').addEventListener('change', function () {
+      readURL(this);
+    });
+
+    document.querySelector('.upload-button').addEventListener('click', function () {
+      document.querySelector('.file-upload').click();
+    });
+  });
+
+
+</script>
+{{end}}

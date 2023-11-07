@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background-color: #988e8e;
+  color: #333;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+/* Style the selected tab */
+#tabs li.selected {
+  background-color: #4a90e2;
+  /* Change this to your desired color */
+}
+
+/* Initially hide the Edit Game button */
+.edit {
+  display: none;
+}
+
+/* When hovering over the gameDetails box, show the Edit Game button */
+.gameDetails:hover .edit {
+  display: block;
+}
+body {
+  width: 100%;
+}
+
+.avatar-wrapper {
+  position: relative;
+  height: 200px;
+  width: 200px;
+  margin: auto auto;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 1px 1px 15px -5px black;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+
+  &:hover .profile-pic {
+    opacity: 0.5;
+  }
+
+  .profile-pic {
+    height: 100%;
+    width: 100%;
+    transition: all 0.3s ease;
+
+    &:after {
+      font-family: FontAwesome;
+      content: "\f007";
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      font-size: 190px;
+      background: #ecf0f1;
+      color: #34495e;
+      text-align: center;
+    }
+  }
+
+  .upload-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    .fa-arrow-circle-up {
+      position: absolute;
+      font-size: 234px;
+      top: -17px;
+      left: 0;
+      text-align: center;
+      opacity: 0;
+      transition: all 0.3s ease;
+      color: #34495e;
+    }
+
+    &:hover .fa-arrow-circle-up {
+      opacity: 0.9;
+    }
+  }
+}

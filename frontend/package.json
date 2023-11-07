@@ -1,0 +1,24 @@
+{
+	"name": "rahoot",
+	"version": "1.0.0",
+	"description": "kahoot clone",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build:css": "npx tailwindcss -i ./css/styles.css -o ./css/tailwind.css --watch"
+	},
+	"repository": {
+		"type": "git",
+		"url": "github.com/Radictionary/kahoot"
+	},
+	"author": "Radin Khosraviani",
+	"license": "ISC",
+	"devDependencies": {
+		"@tailwindcss/forms": "^0.5.6",
+		"tailwindcss": "^3.3.3"
+	},
+	"dependencies": {
+		"tailwindcss-animated": "^1.0.1",
+		"tw-elements": "^1.0.0"
+	}
+}

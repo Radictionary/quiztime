@@ -1,0 +1,205 @@
+{{template "base" .}}
+
+{{define "css"}}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-image: radial-gradient(#aafce5, #88f0e7);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container {
+        width: fit-content;
+        padding: 0.5rem;
+        background-color: #16bdbd;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+        top: 8rem;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        color: #333333;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #ffffff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .avatar-wrapper {
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 5rem;
+        margin-right: 1rem;
+        height: 100px;
+        width: 100px;
+        /* margin: 50px auto; */
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 1px 1px 15px -5px black;
+        transition: all .3s ease;
+
+        &:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        &:hover .profile-pic {
+            opacity: .5;
+        }
+
+        .profile-pic {
+            height: 100%;
+            width: 100%;
+            transition: all .3s ease;
+
+            &:after {
+                font-family: FontAwesome;
+                content: "\f007";
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                font-size: 90px;
+                background: #ecf0f1;
+                color: #34495e;
+                text-align: center;
+            }
+        }
+
+        .upload-button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+
+            .fa-arrow-circle-up {
+                position: absolute;
+                font-size: 135px;
+                top: -17px;
+                left: 0;
+                text-align: center;
+                opacity: 0;
+                transition: all .3s ease;
+                color: #34495e;
+            }
+
+            &:hover .fa-arrow-circle-up {
+                opacity: .9;
+            }
+        }
+    }
+</style>
+{{end}}
+
+{{define "content"}}
+<div class="container">
+    <h1>JOIN GAME</h1>
+    <form id="joinForm">
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" name="name" required placeholder="{{ index .Account.Name}}" autocomplete="off">
+        <br>
+        <label for="gameCode">Game Pin:</label>
+        <input type="text" id="gameCode" name="gameCode" required autocomplete="off">
+        <br>
+        <div class="avatar-wrapper">
+            <img class="profile-pic" src="" style="display: none;" />
+            <i class="bi bi-card-image text-7xl p-4 mt-96 relative top-4"></i>
+            <div class="upload-button">
+                <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+            </div>
+            <input class="file-upload invisible" type="file" accept="image/*" />
+        </div>
+        <button class="absolute top-0 right-0 m-44 mr-3" onclick="removeGamePicture()">Remove Picture</button>
+        <button type="submit" id="submitBtn">Join Game</button>
+    </form>
+</div>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    const Name = "{{.Account.Name}}"
+    document.getElementById("joinForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const gameCode = document.getElementById("gameCode").value;
+        const name = document.getElementById("name").value;
+
+        location.assign("/play/" + gameCode + "?name=" + name + "&picture=" + binaryData)
+    });
+    function checkGameCodePrefix(prefix) {
+        if (document.getElementById("name").innerText == "admin") {
+            document.getElementById("submitBtn").innerText = "Name cannot be admin"
+            return
+        }
+        const gamePinInput = document.getElementById("gameCode");
+        const gamePinValue = gamePinInput.value;
+
+        if (gamePinValue.startsWith(prefix)) {
+            // Game pin starts with the specified prefix
+            document.getElementById("submitBtn").innerText = "Join Hangman Game"
+        } else {
+            // Game pin does not start with the specified prefix
+            document.getElementById("submitBtn").innerText = "Join Game"
+        }
+    }
+
+    // Run the checkGameCodePrefix function every 500 milliseconds (0.5 seconds)
+    setInterval(function () {
+        checkGameCodePrefix("1");
+    }, 300);
+    let binaryData = ""
+    document.addEventListener('DOMContentLoaded', function () {
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Update the image preview
+                    document.querySelector('.bi-card-image').style.display = "none"
+                    document.querySelector('.profile-pic').style.display = "block"
+                    document.querySelector('.profile-pic').src = e.target.result;
+                    // Get the binary data
+                    binaryData = encodeURIComponent(e.target.result.split(',')[1]); // Remove data:image/png;base64,
+
+                    document.body.style.backgroundImage = `url(data:image/jpeg;base64,${e.target.result.split(',')[1]})`;
+                    document.body.style.backgroundPositionX = "center"
+                    document.body.style.backgroundPositionY = "center"
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        document.querySelector('.file-upload').addEventListener('change', function () {
+            readURL(this);
+        });
+
+        document.querySelector('.upload-button').addEventListener('click', function () {
+            document.querySelector('.file-upload').click();
+        });
+    });
+</script>
+{{end}}
