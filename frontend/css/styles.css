@@ -14,10 +14,13 @@
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+.notification-buttons {
+  padding:1rem;
+}
 /* Style the selected tab */
 #tabs li.selected {
   background-color: #4a90e2;
-  /* Change this to your desired color */
 }
 
 /* Initially hide the Edit Game button */
@@ -29,10 +32,6 @@
 .gameDetails:hover .edit {
   display: block;
 }
-body {
-  width: 100%;
-}
-
 .avatar-wrapper {
   position: relative;
   height: 200px;

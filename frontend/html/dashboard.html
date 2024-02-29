@@ -1,0 +1,111 @@
+{{template "base" .}} {{define "content"}}
+<div class="m-10">
+  <h1 class="text-4xl py-10 text-[#25076b]">My Games</h1>
+
+  <div class="flex flex-wrap space-x-5">
+    {{range .Games}}
+    <div class="w-48 h-52 bg-[#99e5e5ad] text-center p-1 py-4 gameDetails m-4 hover:scale-105 hover:rounded-lg" style="background-image: url('data:image/jpeg;base64,{{.GamePicture}}'); background-blend-mode:overlay; text-align: center; background-repeat: no-repeat; background-position-x: center; background-position-y:center;">
+      <div class="details">
+        <h2>Name:<span class="text-xl px-2">{{.Name}}</span></h2>
+        <h2>Timer:<span class="text-xl px-2">{{.Timer}} seconds</span></h2>
+        <h2>Questions:<span class="text-xl px-2">{{.Questions}}</span></h2>
+        <h2 class="mt-10"><span class="text-md px-2">{{.DateOfCreation}}</span></h2>
+      </div>
+      <div class="edit">
+        <div class="w-full h-full bg-[#a2d1f2] inline-block">
+          <button id="editGame" onclick="editGame('{{.Name}}')" class="inline-block w-full">View Game</button>
+        </div>
+      </div>
+    </div>
+    {{end}}
+
+    <div id="createGame" class="w-48 h-52 bg-[#3fb2b2] text-center mt-[0.9rem] hover:scale-105 hover:rounded-lg">
+      <div id="createGameMenu">
+        <i class="bi bi-plus text-9xl"></i>
+        <h1 class="4xl">Create Game</h1>
+      </div>
+      <div id="nameCreate" class="hidden text-center">
+        <label for="nameInput">Name:</label>
+        <br />
+        <input type="text" id="nameInput" name="nameInput" class="p-0" />
+        <button class="hidden self-center text-center w-full p-1 mt-2 px-4 rounded-lg bg-indigo-400" id="continueButton" onclick="validateGame()">continue</button>
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <h1 class="text-4xl py-10 text-[#25076b]">Games Shared With Me</h1>
+  {{if .SharedGames}}
+  <div class="flex flex-row space-x-5">
+    {{range .SharedGames}}
+    <div class="w-48 h-52 bg-[#99e5e5ad] text-center p-1 py-4 gameDetails m-4" style="background-image: url('data:image/jpeg;base64,{{.GamePicture}}'); background-blend-mode:overlay; text-align: center; background-repeat: no-repeat; background-position-x: center; background-position-y:center; ">
+      <div class="details">
+        <h2>Name:<span class="text-xl px-2">{{.Name}}</span></h2>
+        <h2>Timer:<span class="text-xl px-2">{{.Timer}} seconds</span></h2>
+        <h2>Questions:<span class="text-xl px-2">{{.Questions}}</span></h2>
+        <h2 class="mt-10"><span class="text-lg px-2">{{.DateOfCreation}}</span></h2>
+      </div>
+      <div class="edit">
+        <div class="w-full h-full bg-[#a2d1f2] inline-block">
+          <button id="editGame" onclick="editGame('{{.Name}}')" class="inline-block w-full">View Game</button>
+        </div>
+      </div>
+    </div>
+    {{end}} {{else}}
+    <h1 class="bg-[#3fb2b2] p-2 font-normal text-lg">No games have been shared with you!</h1>
+    {{end}}
+  </div>
+</div>
+{{end}} {{define "js"}}
+<script>
+  const gameNameValue = document.getElementById("nameInput");
+  document.getElementById("createGame").addEventListener("click", () => {
+    document.getElementById("createGameMenu").style.display = "none";
+    document.getElementById("nameCreate").style.display = "block";
+    gameNameValue.addEventListener("input", () => {
+      if (gameNameValue.value.length == 1) {
+        document.getElementById("continueButton").style.display = "block";
+      }
+    });
+  });
+  const createGameBox = document.getElementById("createGame");
+  const createGameMenu = document.getElementById("createGameMenu");
+  const nameCreate = document.getElementById("nameCreate");
+
+  function hideNameInput() {
+    createGameMenu.style.display = "block";
+    nameCreate.style.display = "none";
+  }
+
+  document.addEventListener("click", (event) => {
+    if (!createGameBox.contains(event.target)) {
+      hideNameInput();
+    }
+  });
+
+  createGameBox.addEventListener("click", (event) => {
+    event.stopPropagation(); // Prevent clicks on the box from closing it
+  });
+
+  // Event listener for the "Continue" button click
+  document.getElementById("continueButton").addEventListener("click", (event) => {
+    event.stopPropagation(); // Prevent clicks on the button from closing the box
+  });
+
+  function editGame(gameName) {
+    window.location.href = `/game/${gameName}`;
+  }
+
+  function validateGame() {
+    fetch(`/game/${gameNameValue.value}`, {
+      method: "POST",
+    }).then((response) => {
+      if (response.ok && response.status == 200) {
+        location.assign(`/game/${gameNameValue.value}`);
+      } else if (response.status == 403) {
+        showNotification("This game name is not available. Choose a unique name.");
+      }
+    });
+  }
+</script>
+{{end}}

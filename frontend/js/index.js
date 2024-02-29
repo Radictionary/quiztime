@@ -1,22 +1,13 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const hamburgerButton = document.querySelector("[data-te-collapse-init]");
-  const navbarContent = document.querySelector("[data-te-collapse-item]");
+// document.addEventListener("DOMContentLoaded", function () {
+//   const hamburgerButton = document.querySelector("[data-te-collapse-init]");
+//   const navbarContent = document.querySelector("[data-te-collapse-item]");
 
-  let closed = false;
-
-  hamburgerButton.addEventListener("click", function () {
-    if (closed) {
-      //closed
-      document.getElementById("userLogo").style.width = "25px";
-      document.getElementById("userLogo").style.height = "25px";
-    } else {
-      //open
-      document.getElementById("userLogo").style.width = "50px";
-      document.getElementById("userLogo").style.height = "50px";
-    }
-    closed = !closed;
-  });
-});
+//   hamburgerButton.addEventListener("click", function () {
+//     // Toggle the visibility of the navbar content
+//     navbarContent.classList.toggle("hidden");
+//     navbarContent.classList.toggle("flex");
+//   });
+// });
 
 function showNotification(message, time) {
   if (time == undefined || time == null || time == 0) {
@@ -44,10 +35,12 @@ function showNotificationWithConfirmation(message, onYes, onNo) {
 
   var buttonsContainer = document.createElement("div");
   buttonsContainer.classList.add("notification-buttons");
+  buttonsContainer.classList.add("flex");
+  buttonsContainer.classList.add("justify-between");
 
   var yesButton = document.createElement("button");
   yesButton.textContent = "Yes";
-  yesButton.className = "btn btn-danger";
+  yesButton.className = "btn mx-10 bg-slate-50 p-2 rounded-md";
   yesButton.addEventListener("click", function () {
     onYes();
     notification.remove();
@@ -57,7 +50,7 @@ function showNotificationWithConfirmation(message, onYes, onNo) {
 
   var noButton = document.createElement("button");
   noButton.textContent = "No";
-  noButton.className = "btn btn-info";
+  noButton.className = "btn btn-danger mx-10 bg-slate-50 p-2 rounded-md";
   noButton.addEventListener("click", function () {
     onNo();
     notification.remove();

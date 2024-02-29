@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	portNumber       = ":8080"
-	backupPortNumber = ":8081"
+	portNumber       = ":8082"
+	backupPortNumber = ":7083"
 )
 
 var (
@@ -27,7 +27,7 @@ var (
 // main is the main function
 func main() {
 	//change this to true when in production
-	app.InProduction = false
+	app.InProduction = true
 
 	session = scs.New()
 	session.Lifetime = 2 * time.Hour
@@ -60,17 +60,17 @@ func main() {
 		Handler: routes(&app),
 	}
 	err = srv.ListenAndServe()
-	// if err != nil {
-	// 	fmt.Printf("Could not start application using port number %s, using fallback port number %s\n", portNumber, backupPortNumber)
-	// 	srv.Addr = backupPortNumber
-	// 	fmt.Println("Setting production to false")
-	// 	app.InProduction = false
-	// 	err = srv.ListenAndServe()
-	// 	if err != nil {
-	// 		fmt.Println("Could not start web application")
-	// 		return
-	// 	}
-	// }
+	if err != nil {
+		fmt.Printf("Could not start application using port number %s, using fallback port number %s\n", portNumber, backupPortNumber)
+		srv.Addr = backupPortNumber
+		fmt.Println("Setting production to false")
+		app.InProduction = false
+		err = srv.ListenAndServe()
+		if err != nil {
+			fmt.Println("Could not start web application")
+			return
+		}
+	}
 	log.Println("Could not start web application")
 	log.Fatal(err)
 }

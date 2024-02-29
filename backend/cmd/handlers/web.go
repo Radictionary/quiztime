@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 	"github.com/Radictionary/kahoot/backend/internals/models"
 	"github.com/Radictionary/kahoot/backend/internals/render"
 	"github.com/go-chi/chi/v5"
+	qrcode "github.com/skip2/go-qrcode"
 )
 
 // Repo the repository used by the handlers
@@ -33,14 +35,34 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 
+func (m *Repository) NotFound(w http.ResponseWriter, r *http.Request) {
+	account, loggedIn := getSessionData(r)
+	profilePicture := m.getProfilePicture(account.Name)
+	render.RenderTemplate(w, "notFound.html", &models.TemplateData{
+		LoggedIn: loggedIn,
+		Account: account,
+		ProfilePicture: profilePicture,
+	})
+}
+
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
+	account, loggedIn := getSessionData(r)
+	profilePicture := m.getProfilePicture(account.Name)
+	render.RenderTemplate(w, "index.html", &models.TemplateData{
+		LoggedIn: loggedIn,
+		Account: account,
+		ProfilePicture: profilePicture,
+	})
+}
+
+func (m *Repository) Dashboard(w http.ResponseWriter, r *http.Request) {
 	account, loggedIn := getSessionData(r)
 	games := m.FindGames(&account)
 
 	sharedGames := m.FindSharedGames(&account)
 	profilePicture := m.getProfilePicture(account.Name)
 
-	render.RenderTemplate(w, "index.html", &models.TemplateData{
+	render.RenderTemplate(w, "dashboard.html", &models.TemplateData{
 		LoggedIn:    loggedIn,
 		Account:     account,
 		Games:       games,
@@ -95,13 +117,24 @@ func (m *Repository) PlayGame(w http.ResponseWriter, r *http.Request) {
 	gameCodeString := chi.URLParam(r, "code")
 	gameCode, _ := strconv.Atoi(gameCodeString)
 	game, found := m.App.Game.Games[gameCode]
+
 	if !found {
 		http.Redirect(w, r, "/join", http.StatusNotFound)
 		return
 	}
-	var gameAdmin bool
+	var (
+		gameAdmin bool
+		Error error
+		qrCode []byte
+	)
 	if len(game.Players) == 0 {
 		gameAdmin = true
+		fmt.Println("identified as game admin")
+		var err error
+		qrCode, err = qrcode.Encode("https://quiztime.radinworld.com", qrcode.Medium, 256)
+		if err != nil {
+			Error = err
+		}
 	}
 	if game.Status != "waiting" {
 		http.Redirect(w, r, "/join", http.StatusForbidden)
@@ -114,6 +147,8 @@ func (m *Repository) PlayGame(w http.ResponseWriter, r *http.Request) {
 		AccountJSON:    string(m.getAccountJSON(account.Name)),
 		Game:           *game,
 		GameAdmin:      gameAdmin,
+		Error: Error,
+		QrCode: string(qrCode),
 	})
 }
 
@@ -161,5 +196,5 @@ func (m *Repository) getProfilePicture(name string) template.HTML {
 	if user.ProfilePicture == "" {
 
 	}
-	return template.HTML(`<img src="data:image/jpeg;base64,` + user.ProfilePicture + `" class="rounded-full h-[30px] w-[30px]" alt="" loading="lazy" id="navbarProfile"/>`) //send as html(no js needed-faster)
+	return template.HTML(`<img src="data:image/jpeg;base64,` + user.ProfilePicture + `" class="rounded-full h-10 w-10" alt="profile picture" id="navbarProfile"/>`) //send as html(no js needed-faster)
 }

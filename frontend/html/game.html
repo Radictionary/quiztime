@@ -1,12 +1,14 @@
-{{template "base" .}} 
-{{define "content"}}
+{{template "base" .}} {{define "content"}}
 <!-- Generate bg-green-500 and bg-yellow-500 styles from tailwind(tailwind zombies) -->
 <p class="bg-green-500 bg-yellow-500"></p>
 <button class="hidden bg-blue-400 p-5 rounded-xl absolute top-20 right-2" id="actionButton" onclick="action()">Start</button>
 <section class="m-5 text-center h-full" id="preGameLobby" style="background-size: cover">
   <h1 class="text-center text-6xl font-bold">{{.Game.Name}}</h1>
-  <h1 class="absolute left-0 bottom-0 p-5 text-xl"><span class="text-lg">localhost:8080/join with </span>{{.Game.GameCode}}</h1>
-  <div class="relative top-36">
+  <div class="absolute left-0 bottom-0 p-5 flex flex-col">
+    <div id="qrcode" class="w-fit h-fit p-2 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl invisible sm:visible"></div>
+    <h1 class="text-xl"><span class="text-lg">quiztime.radinworld.com/join with </span>{{.Game.GameCode}}</h1>
+  </div>
+  <div class="relative top-16">
     <div class="avatar-wrapper">
       <img class="profile-pic" id="profilePicture" src="" />
       <!-- The following will be used when changing profile picture will be allowed in the pregame lobby -->
@@ -15,24 +17,25 @@
             </div>
             <input class="file-upload" type="file" accept="image/*" /> -->
     </div>
-    <h2 class="text-center text-3xl font-bold tracking-tight text-gray-900" id="userName"></h2>
+    <h2 class="text-center text-3xl mb-20 font-bold tracking-tight text-gray-900" id="userName">{{.Account.Name}}</h2>
   </div>
   {{if .GameAdmin}}
-  <h2 class="text-center text-lg font-bold tracking-tight text-gray-900 -mt-8">
+  <!-- <h2 class="text-center text-lg font-bold tracking-tight text-gray-900 -mt-8">
     You cannot change<br />
     your name<br />
     or profile as <br />game creator
   </h2>
-  <br />
-  <div id="player-list" class="mt-32 flex flex-wrap bg-slate-300 p-7"><!-- Player items will be appended here --></div>
+  <br /> -->
+  <div id="player-list" class="flex flex-wrap bg-slate-300 p-7 " style="margin-top: 6rem;"></div>
   {{else}}
-  <h2 class="text-center text-lg font-bold tracking-tight text-gray-900 -mt-8">
+  <h2 class="text-2xl animate-bounce absolute bottom-1 mb-10 flex justify-center w-full -mt-20">Waiting...</h2>
+  <!-- <h2 class="text-center text-lg font-bold tracking-tight text-gray-900 -mt-8">
     You cannot change<br />
     your name<br />
     or profile while<br />
     in the pre-game<br />
     lobby
-  </h2>
+  </h2> -->
   {{end}}
 </section>
 <section class="m-5 text-center h-full hidden" id="gameContent" style="background-size: cover">
@@ -53,6 +56,21 @@
   </ul>
 </section>
 {{end}} {{define "js"}}
-<link rel="stylesheet" href="/frontend/js/game.js">
+<script>
+  //golang template variables
+  const initialGameTimer = Number("{{.Game.Timer}}"); //
+  const gameAdmin = "{{.GameAdmin}}" == "true";
+  const gameName = "{{.Game.Name}}";
+  const gameCode = "{{.Game.GameCode}}";
+  const gamePicture = "{{.Game.GamePicture}}";
+
+  const qrcodeContainer = document.getElementById("qrcode");
+  let qrcode = new QRCode(qrcodeContainer, {
+    text: `https://quiztime.radinworld.com/join?code=${gameCode}&qrcodescanned=true`,
+    width: 128,
+    height: 128,
+  });
+</script>
+<script src="/frontend/js/game.js"></script>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 {{end}}

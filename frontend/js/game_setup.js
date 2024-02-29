@@ -103,9 +103,8 @@ function saveGame() {
     };
   }
 
-  // Send the game data to the backend using a POST request
   fetch("/game/" + game.name, {
-    method: "PUT", // Change this to the correct endpoint
+    method: "PUT", 
     headers: {
       "Content-Type": "application/json",
     },
@@ -226,11 +225,9 @@ function showTab(tabId) {
     return;
   }
 
-  // Remove the 'selected' class from all tabs
   const tabListItems = document.querySelectorAll("#tabs li");
   tabListItems.forEach((tabItem) => tabItem.classList.remove("selected"));
 
-  // Add the 'selected' class to the selected tab
   if (tabId != "game-details") document.querySelector(`#tabs li[data-tab="${tabId}"]`).classList.add("selected");
 }
 
@@ -395,13 +392,11 @@ function removeSharedUser(username) {
         for (const sharedUserItem of sharedUserItems) {
           const usernameElement = sharedUserItem.querySelector("span");
           if (usernameElement.textContent === username) {
-            // Found the element, remove it
             sharedUserItem.remove();
-            break; // Exit the loop since we found and removed the element
+            break; 
           }
         }
       } else {
-        // Handle errors, e.g., user not found
         alert("Failed to remove the shared user.");
       }
     })
@@ -427,7 +422,7 @@ function playGame() {
     .then((response) => response.text())
     .then((text) => {
       if (text != "" && text != null) {
-        location.replace(`http://localhost:8080/play/${text}?name=${userName}`); //as the first person to join, will become admin
+        location.replace(`http://${window.location.hostname}:${window.location.port}/play/${text}?name=${userName}`); //as the first person to join, will become admin
       }
     });
 }

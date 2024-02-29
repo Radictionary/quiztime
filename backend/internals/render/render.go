@@ -37,7 +37,7 @@ func RenderTemplate(w http.ResponseWriter, html string, td *models.TemplateData)
 
 	t, ok := tc[html]
 	if !ok {
-		fmt.Println("Could not get template from template cache")
+		fmt.Println("Could not get template from template cache. Template is:", tc)
 		w.WriteHeader(http.StatusSeeOther)
 		return
 	}

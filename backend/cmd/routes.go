@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/Radictionary/kahoot/backend/cmd/handlers"
@@ -20,8 +19,8 @@ func routes(app *config.AppConfig) http.Handler {
 	r.Group(func(r chi.Router) {
 		r.Use(SessionLoad) //Session Load Breaks Websocket connections
 		//IMPLEMENT CSRF
-		r.Get("/", ValidateSession(handlers.Repo.Home))
-
+		r.Get("/", handlers.Repo.Home)
+		r.Get("/dashboard", ValidateSession(handlers.Repo.Dashboard))
 		r.Post("/loginrequest", handlers.Repo.LoginRequest)
 		r.Post("/signuprequest", handlers.Repo.SignupRequest)
 		r.Get("/logout", handlers.Repo.Logout)
@@ -36,13 +35,10 @@ func routes(app *config.AppConfig) http.Handler {
 			r.Put("/share", handlers.Repo.Game)
 			r.Delete("/share", handlers.Repo.Game)
 			r.Get("/startgame", handlers.Repo.Game)
+			r.Get("/{page}", handlers.Repo.NotFound)
 		})
 
 		r.Get("/play/{code}", handlers.Repo.PlayGame)
-		r.Get("/test", func(w http.ResponseWriter, r *http.Request) {
-			test, _ := json.Marshal(handlers.Repo.App.Game.Games)
-			w.Write([]byte(string(test)))
-		})
 
 		r.Get("/login", handlers.Repo.Login)
 		r.Get("/signup", handlers.Repo.Signup)
@@ -50,6 +46,8 @@ func routes(app *config.AppConfig) http.Handler {
 		r.Get("/join", handlers.Repo.JoinGame)
 	})
 	r.Get("/play/{code}/ws", handlers.Repo.PlayGameWS)
+
+	r.Get("/{page}", handlers.Repo.NotFound)
 
 	fileServer := http.FileServer(http.Dir("../../frontend/"))
 	r.Handle("/frontend/*", http.StripPrefix("/frontend", fileServer))

@@ -1,114 +1,38 @@
 {{template "base" .}} {{define "content"}}
-<div class="m-10">
-  <h1 class="text-4xl py-10 text-[#25076b]">My Games</h1>
-
-  <div class="flex flex-wrap space-x-5">
-    {{range .Games}}
-    <div class="w-48 h-52 bg-[#99e5e5ad] text-center p-1 py-4 gameDetails m-4" style="background-image: url('data:image/jpeg;base64,{{.GamePicture}}'); background-blend-mode:overlay; text-align: center; background-repeat: no-repeat; background-position-x: center; background-position-y:center;">
-      <div class="details">
-        <h2>Name:<span class="text-xl px-2">{{.Name}}</span></h2>
-        <h2>Timer:<span class="text-xl px-2">{{.Timer}} seconds</span></h2>
-        <h2>Questions:<span class="text-xl px-2">{{.Questions}}</span></h2>
-        <h2 class="mt-10"><span class="text-lg px-2">{{.DateOfCreation}}</span></h2>
-      </div>
-      <div class="edit">
-        <div class="w-full h-full bg-[#a2d1f2] inline-block">
-          <button id="editGame" onclick="editGame('{{.Name}}')" class="inline-block w-full">View Game</button>
+<header class="flex flex-col relative shrink-0 box-border min-h-0 h-screen bg-no-repeat bg-center bg-white sm:bg-slate-50 sm:m-12 px-6 sm:py-5 max-md:h-auto max-md:grow-0 max-sm:w-screen max-sm:ml-[calc(50%_-_50vw)] max-sm:h-screen max-sm:min-h-0 overflow-hidden">
+  <section class="flex flex-col relative shrink-0 box-border min-h-0 bg-no-repeat bg-center bg-white self-stretch w-full grow max-w-[1200px] items-stretch mx-auto my-12 px-6 py-5 max-md:h-auto max-md:grow-0 max-sm:w-screen max-sm:ml-[calc(50%_-_50vw)] max-sm:h-screen max-sm:min-h-0">
+    <div class="flex flex-col relative shrink-0 box-border w-full self-stretch max-w-[1440px] my-auto max-md:h-auto max-md:grow max-md:mt-12 max-sm:m-auto max-sm:pb-52">
+      <div class="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
+        <div class="flex flex-col items-stretch w-[58%] max-md:w-full max-md:ml-0">
+          <div class="flex flex-col max-w-[750px] justify-start items-start my-auto max-md:flex max-md:flex-row max-md:flex-wrap max-md:mb-12">
+            <div class="flex flex-col max-w-full justify-start self-stretch w-[666px] items-start">
+              <div class="max-w-full self-stretch w-[666px] text-black text-6xl leading-[72px] tracking-tight text-left font-bold max-md:w-auto max-md:self-stretch max-md:text-5xl max-md:text-center max-sm:text-4xl">
+                <h1><strong class="text-purple-600 text-6xl sm:text-9xl">Quiztime</strong></h1>
+              </div>
+              <div class="max-w-full self-stretch w-[402px] text-neutral-600 text-2xl tracking-normal text-left font-light mt-2 max-md:text-center max-sm:text-base max-sm:tracking-wider">
+                <h2><span class="text-blue-500 pl-5">Create, Play, Learn</span></h2>
+              </div>
+            </div>
+            <div class="max-w-[444px] w-full self-center flex flex-row gap-4 mr-auto mt-9 max-md:w-full max-md:self-stretch max-md:max-w-[520px] max-md:items-center max-md:justify-center max-md:mx-auto">
+              <div class="flex flex-row justify-center w-auto self-center flex-wrap rounded-lg max-md:justify-between max-md:flex max-md:flex-row max-md:flex-wrap max-md:mt-[px]">
+                <div class="max-w-[89px] text-white text-lg leading-6 text-center justify-center items-center bg-green-700 w-auto self-stretch px-5 py-4 max-md:max-w-[500px] max-md:w-full max-sm:h-auto max-sm:m-auto max-sm:py-3">
+                  <a href="/dashboard"><button>Create a Game</button></a>
+                </div>
+              </div>
+              <div class="flex flex-row justify-center w-auto self-center flex-wrap rounded-lg max-md:justify-between max-md:flex max-md:flex-row max-md:flex-wrap max-md:mt-[px]">
+                <div class="max-w-[89px] text-black text-lg leading-6 text-center justify-center items-center w-auto self-stretch border px-5 py-4 border-solid max-md:max-w-[500px] max-md:w-full max-sm:my-auto max-sm:py-3">
+                  <a href="/join"><button href="/dashboard">Play a Game</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col items-stretch w-[43%] ml-5 max-md:w-full max-md:ml-0">
+          <img loading="lazy" alt="rubix cube" srcset="https://cdn.builder.io/api/v1/image/assets%2Fe62f76effa4f4a65ba3722afb5f1fcea%2F451029b864d247d5943e9f9f052135b6?width=100 100w, https://cdn.builder.io/api/v1/image/assets%2Fe62f76effa4f4a65ba3722afb5f1fcea%2F451029b864d247d5943e9f9f052135b6?width=200 200w, https://cdn.builder.io/api/v1/image/assets%2Fe62f76effa4f4a65ba3722afb5f1fcea%2F451029b864d247d5943e9f9f052135b6?width=400 400w, https://cdn.builder.io/api/v1/image/assets%2Fe62f76effa4f4a65ba3722afb5f1fcea%2F451029b864d247d5943e9f9f052135b6?width=800 800w, https://cdn.builder.io/api/v1/image/assets%2Fe62f76effa4f4a65ba3722afb5f1fcea%2F451029b864d247d5943e9f9f052135b6?width=1200 1200w, https://cdn.builder.io/api/v1/image/assets%2Fe62f76effa4f4a65ba3722afb5f1fcea%2F451029b864d247d5943e9f9f052135b6?width=1600 1600w, https://cdn.builder.io/api/v1/image/assets%2Fe62f76effa4f4a65ba3722afb5f1fcea%2F451029b864d247d5943e9f9f052135b6?width=2000 2000w, https://cdn.builder.io/api/v1/image/assets%2Fe62f76effa4f4a65ba3722afb5f1fcea%2F451029b864d247d5943e9f9f052135b6" class="aspect-[1.26] object-cover object-center w-full shrink-0 box-border min-h-[27px] min-w-[20px] overflow-hidden self-stretch my-auto rounded-2xl max-sm:mt-1 max-sm:pt-1.5" />
         </div>
       </div>
     </div>
-    {{end}}
+  </section>
+</header>
 
-    <div id="createGame" class="w-48 h-52 bg-[#3fb2b2] text-center">
-      <div id="createGameMenu">
-        <i class="bi bi-plus text-9xl"></i>
-        <h1 class="4xl">Create Game</h1>
-      </div>
-      <div id="nameCreate" class="hidden text-center">
-        <label for="nameInput">Name:</label>
-        <br />
-        <input type="text" id="nameInput" name="nameInput" class="p-0" />
-        <button class="hidden self-center text-center w-full p-1 mt-2 px-4 rounded-lg bg-indigo-400" id="continueButton" onclick="validateGame()">continue</button>
-      </div>
-    </div>
-  </div>
-  <br />
-
-  <h1 class="text-4xl py-10 text-[#25076b]">Games Shared With Me</h1>
-  {{if .SharedGames}}
-  <div class="flex flex-row space-x-5">
-    {{range .SharedGames}}
-    <div class="w-48 h-52 bg-[#99e5e5ad] text-center p-1 py-4 gameDetails m-4" style="background-image: url('data:image/jpeg;base64,{{.GamePicture}}'); background-blend-mode:overlay; text-align: center; background-repeat: no-repeat; background-position-x: center; background-position-y:center; ">
-      <div class="details">
-        <h2>Name:<span class="text-xl px-2">{{.Name}}</span></h2>
-        <h2>Timer:<span class="text-xl px-2">{{.Timer}} seconds</span></h2>
-        <h2>Questions:<span class="text-xl px-2">{{.Questions}}</span></h2>
-        <h2 class="mt-10"><span class="text-lg px-2">{{.DateOfCreation}}</span></h2>
-      </div>
-      <div class="edit">
-        <div class="w-full h-full bg-[#a2d1f2] inline-block">
-          <button id="editGame" onclick="editGame('{{.Name}}')" class="inline-block w-full">View Game</button>
-        </div>
-      </div>
-    </div>
-    {{end}} {{else}}
-    <h1 class="bg-[#3fb2b2] p-2 font-normal text-lg">No games have been shared with you!</h1>
-    {{end}}
-  </div>
-</div>
-{{end}} {{define "js"}}
-<script>
-  const gameNameValue = document.getElementById("nameInput");
-  document.getElementById("createGame").addEventListener("click", () => {
-    document.getElementById("createGameMenu").style.display = "none";
-    document.getElementById("nameCreate").style.display = "block";
-    gameNameValue.addEventListener("input", () => {
-      if (gameNameValue.value.length == 1) {
-        document.getElementById("continueButton").style.display = "block";
-      }
-    });
-  });
-  const createGameBox = document.getElementById("createGame");
-  const createGameMenu = document.getElementById("createGameMenu");
-  const nameCreate = document.getElementById("nameCreate");
-
-  // Function to hide the "Name" input and show the "Create Game" menu
-  function hideNameInput() {
-    createGameMenu.style.display = "block";
-    nameCreate.style.display = "none";
-  }
-
-  // Event listener to capture clicks outside of the box
-  document.addEventListener("click", (event) => {
-    if (!createGameBox.contains(event.target)) {
-      hideNameInput();
-    }
-  });
-
-  // Event listener for the "Create Game" box click
-  createGameBox.addEventListener("click", (event) => {
-    event.stopPropagation(); // Prevent clicks on the box from closing it
-  });
-
-  // Event listener for the "Continue" button click
-  document.getElementById("continueButton").addEventListener("click", (event) => {
-    event.stopPropagation(); // Prevent clicks on the button from closing the box
-  });
-
-  function editGame(gameName) {
-    window.location.href = `/game/${gameName}`;
-  }
-
-  function validateGame() {
-    fetch(`/game/${gameNameValue.value}`, {
-      method: "POST",
-    }).then((response) => {
-      if (response.ok && response.status == 200) {
-        location.assign(`/game/${gameNameValue.value}`);
-      } else if (response.status == 403) {
-        showNotification("This game name is not available. Choose a unique name.");
-      }
-    });
-  }
-</script>
 {{end}}

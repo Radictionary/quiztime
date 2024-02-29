@@ -24,5 +24,6 @@ type TemplateData struct {
 	GameJSON string //string([]byte)
 	ProfilePicture template.HTML
 	GameAdmin bool
-	Test template.HTML
+	QrCode string //string([]byte)
+	Error error
 }

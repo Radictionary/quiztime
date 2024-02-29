@@ -114,8 +114,9 @@ func (g *Game) ListUsers() []map[string]string {
 //If answer is correct, give the player points based on the kahoot algorithm
 func (g *Game) ProcessCorrectPlayerAnswer(p *Player, timerWhenAnswered int) { //points algorithm at https://support.kahoot.com/hc/en-us/articles/115002303908-How-points-work
 	questionsAnswers := g.QuestionsAnswers[g.CurrentQuestion-1]
-
-	p.Points += (1 - (((g.Timer - timerWhenAnswered) / g.Timer) / 2)) * questionsAnswers.Points
+	test := p.Points
+	p.Points += int((1 - (((g.Timer - timerWhenAnswered) / g.Timer) / 2)) * questionsAnswers.Points)
+	fmt.Printf("gave %v: %v points", p.Name, p.Points - test)
 }
 
 //Removes a player from the game
@@ -199,7 +200,6 @@ func (p *Player) StartGameListening(g *Game) {
 			}
 			g.RemovePlayer(clientMessage.Message, "you are kicked") //displayed to frontend as "you are leaving because 'you are kicked'"
 		case "question":
-			fmt.Println("LENGTH OF QUESTIONSANSWERS IS:", len(g.QuestionsAnswers), "and current questions is:", g.CurrentQuestion)
 			if g.CurrentQuestion > len(g.QuestionsAnswers) {
 				g.SendScoreboard(true)
 			} else {

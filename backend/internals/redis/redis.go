@@ -21,7 +21,7 @@ type RedisConn struct {
 func InitRedisConnection() *RedisConn {
 	err := godotenv.Load("../../.env")
 	if err != nil {
-		fmt.Println("Could not load local environment")
+		fmt.Println("Could not load local environment(.env file)")
 		return nil
 	}
 	redisAddr := os.Getenv("REDIS_SERVER_ADDR")
@@ -30,7 +30,7 @@ func InitRedisConnection() *RedisConn {
 	clientConn := redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: redisPassword,
-		DB:       5,
+		DB:       4,
 	})
 
 	Redis := &RedisConn{

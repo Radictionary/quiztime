@@ -1,13 +1,8 @@
 //URL management
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-
-//golang template variables
-const initialGameTimer = Number("{{.Game.Timer}}");
-const gameAdmin = "{{.GameAdmin}}" == "true";
-const gameName = "{{.Game.Name}}";
-const gameCode = "{{.Game.GameCode}}";
-const gamePicture = "{{.Game.GamePicture}}";
+const userPicture = urlParams.get("picture");
+const userPictureToSend = encodeURIComponent(userPicture); //profile picture binary to use to connect to websocket backend
 
 //game DOM
 document.getElementById("preGameLobby").style.backgroundImage = `url(data:image/jpeg;base64,${gamePicture})`;
@@ -27,8 +22,6 @@ if (gameAdmin) {
 } else {
   document.getElementById("profilePicture").src = `data:image/jpeg;base64,${userPicture}`;
 }
-const userPicture = urlParams.get("picture");
-const userPictureToSend = encodeURIComponent(userPicture); //profile picture binary to use to connect to websocket backend
 
 
 function startGameTimer() {
@@ -69,7 +62,7 @@ function action() {
   // actionButton.classList = "block bg-blue-400 p-5 rounded-xl absolute top-20 right-2 animate-jump-in animate-ease-in";
   // ws.send(JSON.stringify(createClientMessage("question", "")))
 }
-const ws = new WebSocket(`ws://${window.location.hostname}:8080/play/${gameCode}/ws?name=${userName}&picture=${userPictureToSend}`);
+const ws = new WebSocket(`wss://${window.location.hostname}:${window.location.port}/play/${gameCode}/ws?name=${userName}&picture=${userPictureToSend}`);
 ws.addEventListener("open", function (event) {
   showNotification("Connected to the game");
   console.log("picture used to connect is:", userPicture);
@@ -135,7 +128,6 @@ ws.addEventListener("message", function (event) {
           playerDiv.remove();
         });
 
-        // Append the player div to the container
         playerListContainer.appendChild(playerDiv);
       });
       return;
@@ -143,11 +135,13 @@ ws.addEventListener("message", function (event) {
       if (gameAdmin) {
         return;
       }
-      location.replace("/join");
+      location.replace(rawData.message);
       return;
+    case "left":
+      showNotification(rawData.message)
+      return
     case "question":
       clearInterval(countdown);
-      startGameTimer();
       displayQuestion(JSON.parse(rawData.message));
       scoreboard.classList.add("hidden");
       return;
@@ -161,7 +155,7 @@ ws.addEventListener("message", function (event) {
       ws.send(JSON.stringify(createClientMessage("scoreboard")));
       scoreboard.querySelector("h2").innerText = "Final Score for " + gameName;
       actionButton.classList.add("hidden");
-      populateScoreboard(JSON.parse(rawData.message));
+      populateScoreboard(JSON.parse(rawData.message), true);
       return;
   }
 });
@@ -225,7 +219,7 @@ function sendAnswer(selectedAnswer) {
     )
   );
 }
-function populateScoreboard(data) {
+function populateScoreboard(data, actionButtonNotAllowed) {
   gameContent.classList.add("hidden");
   const scoreboardList = scoreboard.querySelector("ul");
 
@@ -261,5 +255,8 @@ function populateScoreboard(data) {
   if (gameAdmin) {
     actionButton.innerText = "continue";
     actionButton.classList = "block bg-blue-400 p-5 rounded-xl absolute top-20 right-2 animate-jump-in animate-ease-in";
+  }
+  if (actionButtonNotAllowed) {
+    actionButton.classList = "hidden bg-blue-400 p-5 rounded-xl absolute top-20 right-2 animate-jump-in animate-ease-in";
   }
 }

@@ -44,7 +44,7 @@ func (m *Repository) LoginRequest(w http.ResponseWriter, r *http.Request) {
 	}
 	// Compare the stored hashed password, with the password that was received
 	if err = bcrypt.CompareHashAndPassword([]byte(storedCreds.Password), []byte(creds.Password)); err != nil {
-		fmt.Println(storedCreds, "\n", creds)
+		//fmt.Println(storedCreds, "\n", creds)
 		http.Error(w, "incorrect password", http.StatusUnauthorized)
 		return
 	}
@@ -73,7 +73,7 @@ func (m *Repository) LoginRequest(w http.ResponseWriter, r *http.Request) {
 	})
 	redirectPage := m.App.Session.PopString(r.Context(), "attempted_page")
 	if redirectPage == "" {
-		redirectPage = "/"
+		redirectPage = "/dashboard"
 	}
 
 	m.App.Redis.StoreUserAccount(storedCreds)
@@ -206,7 +206,6 @@ func (m *Repository) Game(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		gameJSON, _ := json.Marshal(game)
-		fmt.Println("the game retrieved when loading gamesetup is:", game)
 		render.RenderTemplate(w, "gamesetup.html", &models.TemplateData{
 			LoggedIn:       loggedIn,
 			Account:        currentAccount,
@@ -244,7 +243,6 @@ func (m *Repository) Game(w http.ResponseWriter, r *http.Request) {
 		} else {
 			oldGame, _ := m.App.Redis.RetrieveGame(gameName)
 
-
 			var game game.Game
 			if err := json.NewDecoder(r.Body).Decode(&game); err != nil {
 				log.Println("error decoding body when creating/editing game:", err)
@@ -252,7 +250,7 @@ func (m *Repository) Game(w http.ResponseWriter, r *http.Request) {
 			}
 			if gameTest, _ := m.App.Redis.RetrieveGame(game.Name); gameTest.DateOfCreation == "" { //only update if it is first time creating game
 				game.DateOfCreation = time.Now().Format(time.UnixDate)
-			} else{
+			} else {
 				game.DateOfCreation = oldGame.DateOfCreation
 			}
 			m.App.Redis.StoreGame(game)
@@ -287,13 +285,11 @@ func (m *Repository) Game(w http.ResponseWriter, r *http.Request) {
 			gameOwner, _ := m.App.Redis.RetrieveUserAccount(game.Owner)
 			gameOwner.Games = models.RemoveStringFromStringSlice(gameOwner.Games, gameName)
 			m.App.Redis.StoreUserAccount(gameOwner)
-
 			m.App.Redis.Remove("game:" + game.Name)
 			w.WriteHeader(http.StatusOK)
 		}
 	}
 }
-
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: websocket.IsWebSocketUpgrade,
@@ -328,6 +324,16 @@ func (m *Repository) PlayGameWS(w http.ResponseWriter, r *http.Request) { //TODO
 		player.Conn = nil
 		currentGame.Players[player.Name] = &player
 		currentGame.RemovePlayer(player.Name, "") //reason is blank("") as there is no point of displaying a reason to a absent player
+		if player.Owner {
+			for _, player := range currentGame.Players {
+				player.SendMessage("leave", "/join?alert='Game Host left the game'")
+			}
+		} else {
+			for _, player := range currentGame.Players {
+				player.SendMessage("left", player.Name+" has left the game")
+			}
+		}
+		currentGame.FindOwner().SendJSON("connectedUsers", currentGame.ListUsers()) //send to owner the list of users connected to game. If the user connected is the owner, there is no need
 		return nil
 	})
 	go func() { // start goroutine which listens to channel for messages to send
@@ -344,7 +350,7 @@ func (m *Repository) PlayGameWS(w http.ResponseWriter, r *http.Request) { //TODO
 		currentGame.FindOwner().SendJSON("connectedUsers", currentGame.ListUsers()) //send to owner the list of users connected to game. If the user connected is the owner, there is no need
 	}
 	go player.StartGameListening(currentGame) //processes received messages
-	for player.Conn != nil { //start goroutine which listens for incoming messages and sends them to receive channel for processing
+	for player.Conn != nil {                  //start goroutine which listens for incoming messages and sends them to receive channel for processing
 		_, rawMessage, err := player.Conn.ReadMessage()
 		if err != nil {
 			fmt.Println("ERROR READING MESSAGE FROM", player.Name, "AND ERROR IS:", err)

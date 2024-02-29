@@ -1,210 +1,197 @@
-{{template "base" .}}
-{{define "head"}}
+{{template "base" .}} {{define "head"}}
 <style>
-    .avatar-wrapper {
-        position: absolute;
-        right: 0;
-        top: 0;
-        margin: 5rem;
-        margin-right: 1rem;
-        height: 100px;
-        width: 100px;
-        /* margin: 50px auto; */
-        border-radius: 50%;
-        overflow: hidden;
-        box-shadow: 1px 1px 15px -5px black;
-        transition: all .3s ease;
+  .avatar-wrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 5rem;
+    margin-right: 1rem;
+    height: 100px;
+    width: 100px;
+    /* margin: 50px auto; */
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 1px 1px 15px -5px black;
+    transition: all 0.3s ease;
 
-        &:hover {
-            transform: scale(1.05);
-            cursor: pointer;
-        }
-
-        &:hover .profile-pic {
-            opacity: .5;
-        }
-
-        .profile-pic {
-            height: 100%;
-            width: 100%;
-            transition: all .3s ease;
-
-            &:after {
-                font-family: FontAwesome;
-                content: "\f007";
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                font-size: 90px;
-                background: #ecf0f1;
-                color: #34495e;
-                text-align: center;
-            }
-        }
-
-        .upload-button {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-
-            .fa-arrow-circle-up {
-                position: absolute;
-                font-size: 135px;
-                top: -17px;
-                left: 0;
-                text-align: center;
-                opacity: 0;
-                transition: all .3s ease;
-                color: #34495e;
-            }
-
-            &:hover .fa-arrow-circle-up {
-                opacity: .9;
-            }
-        }
+    &:hover {
+      transform: scale(1.05);
+      cursor: pointer;
     }
+
+    &:hover .profile-pic {
+      opacity: 0.5;
+    }
+
+    .profile-pic {
+      height: 100%;
+      width: 100%;
+      transition: all 0.3s ease;
+
+      &:after {
+        font-family: FontAwesome;
+        content: "\f007";
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        font-size: 90px;
+        background: #ecf0f1;
+        color: #34495e;
+        text-align: center;
+      }
+    }
+
+    .upload-button {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+
+      .fa-arrow-circle-up {
+        position: absolute;
+        font-size: 135px;
+        top: -17px;
+        left: 0;
+        text-align: center;
+        opacity: 0;
+        transition: all 0.3s ease;
+        color: #34495e;
+      }
+
+      &:hover .fa-arrow-circle-up {
+        opacity: 0.9;
+      }
+    }
+  }
 </style>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-{{end}}
-{{define "content"}}
-<div class="flex" id="allContent">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+{{end}} {{define "content"}}
+<section class="m-10">
+  <div class="flex" id="allContent">
     <!-- Sidebar with tabs -->
     <aside class="w-1/6 bg-gray-800 text-white p-4">
-        <h1 class="text-2xl font-bold mb-4">Game Details</h1>
-        <ul id="tabs" class="space-y-2">
-            <li class="cursor-pointer p-2 -ml-1 w-32 bg-slate-500 rounded-xl" onclick="addNewQuestionTab()">New
-                Question
-            </li>
-            <li class="cursor-pointer bg-slate-600 rounded-xl w-32 -ml-1 p-2" onclick="showTab('game-details')">Game
-                Details</li>
-
-        </ul>
+      <h1 class="text-2xl font-bold mb-4">Game Details</h1>
+      <ul id="tabs" class="space-y-2">
+        <li class="cursor-pointer p-2 -ml-1 w-32 bg-slate-500 rounded-xl" onclick="addNewQuestionTab()">New Question</li>
+        <li class="cursor-pointer bg-slate-600 rounded-xl w-32 -ml-1 p-2" onclick="showTab('game-details')">Game Details</li>
+      </ul>
     </aside>
 
     <!-- Game Details Tab -->
     <main class="w-full m-1">
-        <section id="game-details" class="bg-[#7c848af9] tab-content p-8 m-1">
-            <h2 class="text-xl font-semibold mb-2">Game Details</h2>
-            <label for="owner">Game Owner:</label>
-            <input id="owner" name="owner" class=" border-none cursor-crosshair w-fit bg-transparent -mr-20"
-                value="{{.Account.Name}}" disabled>
-            <label for="gameName">Game Name:</label>
-            <input type="text" id="gameName" name="gameName" class="border p-2 mb-2" value="{{index .Message}}">
-            <label for="gameTimer">Timer(in seconds):</label>
-            <input type="text" id="timer" name="gameTimer" class="border p-2 mb-2" value="30">
-            <br>
-            <button class="bg-[#66bf39] cursor-pointer rounded-xl ml-10 p-2 w-32" onclick="saveGame()">Save
-                Game</button>
-            <button class="bg-[#0542b9] cursor-pointer rounded-xl ml-10 p-2 w-32" onclick="playGame()">Play</button>
+      <section id="game-details" class="bg-[#7c848af9] tab-content p-8 m-1">
+        <h2 class="text-xl font-semibold mb-2">Game Details</h2>
+        <label for="owner">Game Owner:</label>
+        <input id="owner" name="owner" class="border-none cursor-crosshair w-fit bg-transparent -mr-20" value="{{.Account.Name}}" disabled />
+        <label for="gameName">Game Name:</label>
+        <input type="text" id="gameName" name="gameName" class="border p-2 mb-2" value="{{index .Message}}" />
+        <label for="gameTimer">Timer(in seconds):</label>
+        <input type="text" id="timer" name="gameTimer" class="border p-2 mb-2" value="30" />
+        <br />
+        <button class="bg-[#66bf39] cursor-pointer rounded-xl ml-10 p-2 w-32" onclick="saveGame()">Save Game</button>
+        <button class="bg-[#0542b9] cursor-pointer rounded-xl ml-10 p-2 w-32" onclick="playGame()">Play</button>
 
-            <button class="bg-blue-500 text-white p-2 rounded-xl ml-10 w-fit absolute bottom-0 right-0 hover:bg-blue-400" onclick="openShareModal()"><i class="bi bi-share"></i></button>
-            <button class="bg-red-600 text-white p-2 rounded-xl ml-10 w-32" onclick="deleteGame()">Delete Game</button>
+        <button class="bg-blue-500 text-white p-2 rounded-xl ml-10 w-fit absolute bottom-0 right-0 hover:bg-blue-400" onclick="openShareModal()"><i class="bi bi-share"></i></button>
+        <button class="bg-red-600 text-white p-2 rounded-xl ml-10 w-32" onclick="deleteGame()">Delete Game</button>
 
-            <div class="avatar-wrapper">
-                <img class="profile-pic" src="" style="display: none;" />
-                <i class="bi bi-card-image text-7xl p-4 mt-96 relative top-4"></i>
-                <div class="upload-button">
-                    <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-                </div>
-                <input class="file-upload invisible" type="file" accept="image/*" />
+        <div class="avatar-wrapper">
+          <img class="profile-pic" src="" style="display: none" />
+          <i class="bi bi-card-image text-7xl p-4 mt-96 relative top-4"></i>
+          <div class="upload-button">
+            <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+          </div>
+          <input class="file-upload invisible" type="file" accept="image/*" />
+        </div>
+        <button class="absolute top-0 right-0 m-44 mr-3" onclick="removeGamePicture()" id="removePictureButton">Remove Picture</button>
+
+        <!-- <img class="rounded-full h-[30px] w-[30px]" alt="" loading="lazy" id="gamePicture"/> -->
+
+        <div id="modal-backdrop" class="fixed inset-0 bg-black opacity-50 z-50 hidden"></div>
+
+        <div id="share-modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md shadow-md z-50 hidden">
+          <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 cursor-pointer" onclick="closeShareModal()">✕</button>
+          <div id="share-game" class="bg-gray-100 p-4 rounded-md shadow-md mb-4 mt-10">
+            <h2 class="text-xl font-semibold mb-2">Share Game</h2>
+            <label for="sharedUser">Share with user:</label>
+            <div class="flex">
+              <input type="text" id="sharedUser" name="sharedUser" class="w-full border p-2 rounded-l-md" placeholder="Enter username" />
+              <button class="bg-blue-500 text-white p-2 rounded-r-md cursor-pointer" onclick="shareGame()">Share</button>
             </div>
-            <button class="absolute top-0 right-0 m-44 mr-3" onclick="removeGamePicture()" id="removePictureButton">Remove Picture</button>
-
-
-            <!-- <img class="rounded-full h-[30px] w-[30px]" alt="" loading="lazy" id="gamePicture"/> -->
-
-            <div id="modal-backdrop" class="fixed inset-0 bg-black opacity-50 z-50 hidden"></div>
-
-            <div id="share-modal"
-                class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md shadow-md z-50 hidden">
-                <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 cursor-pointer"
-                    onclick="closeShareModal()">✕</button>
-                <div id="share-game" class="bg-gray-100 p-4 rounded-md shadow-md mb-4 mt-10">
-                    <h2 class="text-xl font-semibold mb-2">Share Game</h2>
-                    <label for="sharedUser">Share with user:</label>
-                    <div class="flex">
-                        <input type="text" id="sharedUser" name="sharedUser" class="w-full border p-2 rounded-l-md"
-                            placeholder="Enter username">
-                        <button class="bg-blue-500 text-white p-2 rounded-r-md cursor-pointer"
-                            onclick="shareGame()">Share</button>
-                    </div>
-                    <div id="sharedUsersBox" class="mt-4">
-                        <!-- Shared users will be displayed here -->
-                    </div>
-                </div>
+            <div id="sharedUsersBox" class="mt-4">
+              <!-- Shared users will be displayed here -->
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
     </main>
-</div>
-{{end}}
-{{define "js"}}
+  </div>
+</section>
+
+{{end}} {{define "js"}}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    const userName = "{{.Account.Name}}"
-    const gameName = "{{.Message}}";
-    const gameJSON = "{{.GameJSON}}";
-    // let gamePicture = ""
+  const userName = "{{.Account.Name}}";
+  const gameName = "{{.Message}}";
+  const gameJSON = "{{.GameJSON}}";
+  // let gamePicture = ""
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+  document.addEventListener("DOMContentLoaded", function () {
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
 
-                reader.onload = function (e) {
-                    // Update the image preview
-                    document.querySelector('.bi-card-image').style.display = "none"
-                    document.querySelector('.profile-pic').style.display = "block"
-                    document.querySelector('.profile-pic').src = e.target.result;
-                    // Get the binary data
-                    var binaryData = e.target.result.split(',')[1]; // Remove data:image/png;base64,
+        reader.onload = function (e) {
+          // Update the image preview
+          document.querySelector(".bi-card-image").style.display = "none";
+          document.querySelector(".profile-pic").style.display = "block";
+          document.querySelector(".profile-pic").src = e.target.result;
+          // Get the binary data
+          var binaryData = e.target.result.split(",")[1]; // Remove data:image/png;base64,
 
-                    gamePicture = binaryData
-                    document.body.style.backgroundImage = `url(data:image/jpeg;base64,${gamePicture})`;
-                    document.body.style.backgroundPositionX = "center"
-                    document.body.style.backgroundPositionY = "center"
-                    saveGame()
-                };
+          gamePicture = binaryData;
+          document.body.style.backgroundImage = `url(data:image/jpeg;base64,${gamePicture})`;
+          document.body.style.backgroundPositionX = "center";
+          document.body.style.backgroundPositionY = "center";
+          saveGame();
+        };
 
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        document.querySelector('.file-upload').addEventListener('change', function () {
-            readURL(this);
-        });
-
-        document.querySelector('.upload-button').addEventListener('click', function () {
-            document.querySelector('.file-upload').click();
-        });
-    });
-</script>
-<script>
-
-    function deleteGame() {
-        fetch("/game/" + gameName, {
-            method: "delete", // Change this to the correct endpoint
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then((response) => {
-                if (response.ok) {
-                    location.replace("/")
-                } else {
-                    // Handle any errors
-                    alert("Failed to save the game.");
-                }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
+        reader.readAsDataURL(input.files[0]);
+      }
     }
 
+    document.querySelector(".file-upload").addEventListener("change", function () {
+      readURL(this);
+    });
+
+    document.querySelector(".upload-button").addEventListener("click", function () {
+      document.querySelector(".file-upload").click();
+    });
+  });
+</script>
+<script>
+  function deleteGame() {
+    fetch("/game/" + gameName, {
+      method: "delete", // Change this to the correct endpoint
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          location.replace("/");
+        } else {
+          // Handle any errors
+          alert("Failed to save the game.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 </script>
 <script src="/frontend/js/game_setup.js"></script>
 {{end}}
