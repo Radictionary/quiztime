@@ -27,7 +27,7 @@ var (
 // main is the main function
 func main() {
 	//change this to true when in production
-	app.InProduction = true
+	app.InProduction = false
 
 	session = scs.New()
 	session.Lifetime = 2 * time.Hour

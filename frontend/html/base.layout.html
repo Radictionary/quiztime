@@ -18,7 +18,6 @@
 
   <body class="bg-[#45a3e5]">
     <!-- Main navigation container -->
-
     <nav class="bg-white border-gray-200 dark:bg-gray-900" id="navbar">
       <div class="max-w-screen-xl flex flex-wrap items-center p-4 mx-auto">
         <a href="/" class="text-purple-500 flex items-center space-x-3 rtl:space-x-reverse">
@@ -29,7 +28,7 @@
           <div class="absolute right-16">
             <button type="button" class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
               <span class="sr-only">Open user menu</span>
-             {{.ProfilePicture}}
+              {{.ProfilePicture}}
             </button>
             <!-- Dropdown menu -->
             <div class="z-50 w-80 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
@@ -89,22 +88,19 @@
         </div>
       </div>
     </nav>
-
+    {{block "content" .}} {{end}} {{block "js" .}} {{end}}
     <script>
       const accountJSON = "{{index .AccountJSON}}";
       const profilePictureSrc = "{{.ProfilePicture}}";
-      // document.getElementById("navbarProfile").src = profilePictureSrc
-      // document.getElementById("navbarProfile").src = 'data:image/jpeg;base64,' + JSON.parse(accountJSON).profilePicture;
-      // console.log("it is:", JSON.parse(accountJSON))
-    </script>
-    {{block "content" .}} {{end}} {{block "js" .}} {{end}}
-    <script>
       const flash = "{{.Flash }}";
       if (flash != "" && flash != " ") {
         showNotification(flash);
       }
       if (document.getElementById("logInText") != null) {
         document.getElementById("navbarSupportedContent1").style.display = "none";
+      }
+      if (window.location.pathname == "/" || window.location.pathname == "") {
+        document.body.classList.add("overflow-y-hidden");
       }
       // const urlParams = new URLSearchParams(queryString);
     </script>

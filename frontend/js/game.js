@@ -162,6 +162,8 @@ ws.addEventListener("message", function (event) {
 ws.addEventListener("error", function (event) {
   showNotification("WebSocket error:", event);
 });
+
+
 const gameContent = document.getElementById("gameContent");
 const question = document.getElementById("question");
 const answerChoicesContainer = document.getElementById("answerChoices");
