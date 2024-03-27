@@ -194,7 +194,7 @@ func (m *Repository) getAccountJSON(name string) []byte {
 func (m *Repository) getProfilePicture(name string) template.HTML {
 	user, _ := m.App.Redis.RetrieveUserAccount(name)
 	if user.ProfilePicture == "" {
-
+		return template.HTML("<i class='bi bi-person-circle text-4xl w-fit'></i>")
 	}
 	return template.HTML(`<img src="data:image/jpeg;base64,` + user.ProfilePicture + `" class="rounded-full h-10 w-10" alt="profile picture" id="navbarProfile"/>`) //send as html(no js needed-faster)
 }

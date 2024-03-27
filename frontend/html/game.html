@@ -11,31 +11,13 @@
   <div class="relative top-16">
     <div class="avatar-wrapper">
       <img class="profile-pic" id="profilePicture" src="" />
-      <!-- The following will be used when changing profile picture will be allowed in the pregame lobby -->
-      <!-- <div class="upload-button">
-                <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-            </div>
-            <input class="file-upload" type="file" accept="image/*" /> -->
     </div>
     <h2 class="text-center text-3xl mb-20 font-bold tracking-tight text-gray-900" id="userName">{{.Account.Name}}</h2>
   </div>
   {{if .GameAdmin}}
-  <!-- <h2 class="text-center text-lg font-bold tracking-tight text-gray-900 -mt-8">
-    You cannot change<br />
-    your name<br />
-    or profile as <br />game creator
-  </h2>
-  <br /> -->
   <div id="player-list" class="flex flex-wrap bg-slate-300 p-7 " style="margin-top: 6rem;"></div>
   {{else}}
   <h2 class="text-2xl animate-bounce absolute bottom-1 mb-10 flex justify-center w-full -mt-20">Waiting...</h2>
-  <!-- <h2 class="text-center text-lg font-bold tracking-tight text-gray-900 -mt-8">
-    You cannot change<br />
-    your name<br />
-    or profile while<br />
-    in the pre-game<br />
-    lobby
-  </h2> -->
   {{end}}
 </section>
 <section class="m-5 text-center h-full hidden" id="gameContent" style="background-size: cover">

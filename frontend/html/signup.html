@@ -59,7 +59,7 @@
       if (response.ok) {
         // Successful registration, you can redirect or show a success message
         window.location.href = "/login";
-      } else if (response.status == 403) {
+      } else if (response.status == 409) {
         showNotification("Name is taken")
       } else {
         errorMessage.textContent = data.error || "An error occurred";

@@ -89,7 +89,7 @@
     </div>
 
     <div class="my-5 mx-0">
-      <label class="font-bold">Password:</label>
+      <label class="font-bold">Password (hashed):</label>
       <span id="name-span" class="pr-3">{{index .Account.Password}}</span>
       <input type="text" id="name-input" class="hidden ml-4" placeholder="{{index .Account.Password}}" disabled />
     </div>
@@ -98,7 +98,6 @@
 </div>
 <script src="/frontend/js/profile.js"></script>
 <script>
-  // const accountJSON = "{{index .AccountJSON}}" 
   document.querySelector('.profile-pic').src = 'data:image/jpeg;base64,' + JSON.parse(accountJSON).profilePicture; // Adjust the image format as needed
   const name = "{{index .Account.Name}}"
 </script>
