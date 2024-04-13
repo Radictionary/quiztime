@@ -11,6 +11,8 @@ require (
 	golang.org/x/crypto v0.13.0
 )
 
+require golang.org/x/tools v0.20.0 // indirect
+
 require (
 	github.com/alexedwards/scs/v2 v2.5.1
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect

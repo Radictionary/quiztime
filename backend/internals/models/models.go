@@ -8,11 +8,6 @@ type Account struct {
 	Password       string         `json:"password"`
 	Games          []string       `json:"games"`
 	SharedGames    []string       `json:"sharedGames"`
-	UserStatistics UserStatistics `json:"statistics"`
-}
-
-type UserStatistics struct {
-	LastLoggedIn string `json:"lastLoggedIn"`
 }
 
 func (a *Account) AllowedGame(gameName string) bool {

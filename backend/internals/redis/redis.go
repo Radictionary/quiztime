@@ -5,10 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"sync"
 
-	"github.com/Radictionary/kahoot/backend/internals/game"
-	"github.com/Radictionary/kahoot/backend/internals/models"
+	"github.com/Radictionary/kahoot/internals/game"
+	"github.com/Radictionary/kahoot/internals/models"
 	"github.com/go-redis/redis/v8"
 	"github.com/joho/godotenv"
 )
@@ -106,7 +105,6 @@ func (r *RedisConn) StoreUserAccount(user models.Account) error {
 		"name":                    user.Name,
 		"password":                user.Password,
 		"profilePicture": user.ProfilePicture,
-		"statistics-lastLoggedIn": user.UserStatistics.LastLoggedIn,
 		"games":                   gamesJSON, // Store the JSON representation of games
 		"sharedGames":             sharedGamesJSON,
 	}
@@ -129,9 +127,6 @@ func (r *RedisConn) RetrieveUserAccount(key string) (models.Account, error) {
 		Name:     result["name"],
 		Password: result["password"],
 		ProfilePicture: result["profilePicture"],
-		UserStatistics: models.UserStatistics{
-			LastLoggedIn: result["statistics-lastLoggedIn"],
-		},
 	}
 
 	gamesJSON := result["games"]
@@ -155,73 +150,12 @@ func (r *RedisConn) RetrieveUserAccount(key string) (models.Account, error) {
 	return user, nil
 }
 
-func (r *RedisConn) ClearUsers(identifier string) error {
-	cursor := uint64(0)
-	var batchSize int64 = 1000
-	for {
-		keys, nextCursor, err := r.Rdb.Scan(context.Background(), cursor, identifier+":*", batchSize).Result()
-		if err != nil {
-			return err
-		}
-
-		if len(keys) > 0 {
-			err := r.Rdb.Del(context.Background(), keys...).Err()
-			if err != nil {
-				return err
-			}
-		}
-
-		cursor = nextCursor
-		if cursor == 0 {
-			break
-		}
-	}
-	return nil
-}
-
 func (r *RedisConn) Remove(identifier string) error {
 	err := r.Rdb.Del(context.Background(), identifier)
 	if err.Err() != nil {
 		return err.Err()
 	}
 	return nil
-}
-
-func (r *RedisConn) GetUserCount() int {
-	var userCount int
-	var wg sync.WaitGroup
-	keys, err := r.Rdb.Keys(context.Background(), "account:*").Result()
-	if err != nil {
-		fmt.Println("Error retrieving keys:", err)
-		return userCount
-	}
-
-	countCh := make(chan int, len(keys))
-
-	for _, key := range keys {
-		wg.Add(1)
-		go func(k string) {
-			defer wg.Done()
-			count, err := r.Rdb.HLen(context.Background(), k).Result()
-			if err != nil {
-				fmt.Println("Error retrieving user count:", err)
-				countCh <- 0
-			}
-			countCh <- int(count)
-		}(key)
-	}
-
-	// Close the countCh channel after all Goroutines have finished
-	go func() {
-		wg.Wait()
-		close(countCh)
-	}()
-
-	for count := range countCh {
-		userCount += count
-	}
-
-	return userCount
 }
 
 // StoreGame stores a game in the Redis database.

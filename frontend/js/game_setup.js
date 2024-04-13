@@ -1,5 +1,5 @@
 let gameData = JSON.parse(gameJSON);
-console.log("GAME DATA IS:", gameData);
+//console.log("GAME DATA IS:", gameData);
 let gamePicture = ""
 gamePicture = gameData.GamePicture;
 let usersShared = gameData.UsersShared;
@@ -11,9 +11,7 @@ if (gameData.Timer != 0) {
 }
 
 let currentUsersShared = usersShared;
-// document.getElementById("gamePicture").src = `data:image/jpeg;base64,${gameData.GamePicture}`;
 if (gameData.GamePicture != "" && gameData.GamePicture != null) {
-  // document.querySelector(".profile-pic").src = `data:image/jpeg;base64,${gameData.GamePicture}`;
   document.querySelector(".bi-card-image").style.display = "none";
   document.querySelector(".profile-pic").style.display = "initial";
   document.querySelector(".profile-pic").src = `data:image/jpeg;base64,${gameData.GamePicture}`;
@@ -30,6 +28,8 @@ document.getElementById("navbar").addEventListener("mouseenter", () => {
   showNotification("Don't forget to save!", 1200);
 });
 
+
+//Saves the game by collecting game details and question details, and sends a PUT request to the server.
 function saveGame() {
   // Collect game details
   let gameDetails = {
@@ -204,7 +204,7 @@ function createTabsAndContent(data) {
     mainContent.appendChild(questionTab);
   });
 
-  // Show the first question tab by default
+  // Show the first game details tab by default
   showTab("game-details");
 }
 try {
@@ -422,7 +422,7 @@ function playGame() {
     .then((response) => response.text())
     .then((text) => {
       if (text != "" && text != null) {
-        location.replace(`http://${window.location.hostname}:${window.location.port}/play/${text}?name=${userName}`); //as the first person to join, will become admin
+        location.replace(`http://${window.location.hostname}:${window.location.port}/play/${text}?name=${userName}`); //The first person to join will become admin
       }
     });
 }

@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/Radictionary/kahoot/backend/cmd/handlers"
-	"github.com/Radictionary/kahoot/backend/internals/config"
+	"github.com/Radictionary/kahoot/cmd/handlers"
+	"github.com/Radictionary/kahoot/internals/config"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -18,7 +18,6 @@ func routes(app *config.AppConfig) http.Handler {
 	//Non websocket connections
 	r.Group(func(r chi.Router) {
 		r.Use(SessionLoad) //Session Load Breaks Websocket connections
-		//IMPLEMENT CSRF
 		r.Get("/", handlers.Repo.Home)
 		r.Get("/dashboard", ValidateSession(handlers.Repo.Dashboard))
 		r.Post("/loginrequest", handlers.Repo.LoginRequest)

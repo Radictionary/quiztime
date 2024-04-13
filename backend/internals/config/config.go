@@ -3,8 +3,8 @@ package config
 import (
 	"html/template"
 
-	"github.com/Radictionary/kahoot/backend/internals/game"
-	"github.com/Radictionary/kahoot/backend/internals/redis"
+	"github.com/Radictionary/kahoot/internals/game"
+	"github.com/Radictionary/kahoot/internals/redis"
 	"github.com/alexedwards/scs/v2"
 )
 

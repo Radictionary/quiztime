@@ -3,6 +3,7 @@ package game
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -40,7 +41,6 @@ type QuestionsAnswers struct {
 	Answers        []string //includes correct and wrong answers
 	CorrectAnswers []string
 	Points         int
-	QuestionImage  string //needs implementation, if at all
 }
 
 //Each Player and the information needed about them
@@ -49,8 +49,6 @@ type Player struct {
 	Owner           bool //for when game is being played. Is the first person to join game.
 	Conn            *websocket.Conn
 	Points          int
-	answeredCorrect int
-	answeredWrong   int
 	Playing         bool
 	AnsweredCorrect bool //for logic which will will loop through all players and tell them if they answered correct. Value constantly changing. Might not use
 	Picture         string
@@ -112,11 +110,13 @@ func (g *Game) ListUsers() []map[string]string {
 }
 
 //If answer is correct, give the player points based on the kahoot algorithm
-func (g *Game) ProcessCorrectPlayerAnswer(p *Player, timerWhenAnswered int) { //points algorithm at https://support.kahoot.com/hc/en-us/articles/115002303908-How-points-work
-	questionsAnswers := g.QuestionsAnswers[g.CurrentQuestion-1]
-	test := p.Points
-	p.Points += int((1 - (((g.Timer - timerWhenAnswered) / g.Timer) / 2)) * questionsAnswers.Points)
-	fmt.Printf("gave %v: %v points", p.Name, p.Points - test)
+func (g *Game) ProcessCorrectPlayerAnswer(p *Player, timerWhenAnswered int) {
+    questionsAnswers := g.QuestionsAnswers[g.CurrentQuestion-1]
+    fractionUsed := float64(timerWhenAnswered) / float64(g.Timer)
+    scoreMultiplier := 1.0 - (fractionUsed / 2.0)
+    score := scoreMultiplier * float64(questionsAnswers.Points)
+    finalScore := int(math.Round(score))
+    p.Points += finalScore
 }
 
 //Removes a player from the game
@@ -207,15 +207,12 @@ func (p *Player) StartGameListening(g *Game) {
 					neededQuestion := g.QuestionsAnswers[g.CurrentQuestion-1]
 					player.SendJSON("question", neededQuestion)
 				}
-				// neededQuestion := g.QuestionsAnswers[g.CurrentQuestion-1]
-				// p.SendJSON("question", neededQuestion)
 			}
 		case "answer":
 			var userAnswer map[string]string
 			json.Unmarshal([]byte(clientMessage.Message), &userAnswer)
 			g.QuestionsAnsweredInRound++
 			currentQuestion := g.QuestionsAnswers[g.CurrentQuestion-1]
-			// fmt.Println("third:", g.QuestionsAnswers[g.CurrentQuestion].CorrectAnswers[len(g.QuestionsAnswers[g.CurrentQuestion].CorrectAnswers)-1])
 			if len(currentQuestion.CorrectAnswers) > 1 {
 				for _, v := range currentQuestion.CorrectAnswers {
 					if v == userAnswer["answer"] {

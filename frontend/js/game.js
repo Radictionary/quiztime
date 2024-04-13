@@ -189,10 +189,6 @@ function displayQuestion(questionData) {
       // Add a click event listener to send the selected answer to the backend
       answerChoiceDiv.addEventListener("click", () => {
         sendAnswer(answer);
-        // setTimeout(() => {
-        //     ws.send(JSON.stringify(createClientMessage("score", "?")))
-        //     console.log("asked how many points")
-        // }, 1000);
       });
 
       answerChoiceDiv.textContent = answer;

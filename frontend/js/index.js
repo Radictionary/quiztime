@@ -1,14 +1,3 @@
-// document.addEventListener("DOMContentLoaded", function () {
-//   const hamburgerButton = document.querySelector("[data-te-collapse-init]");
-//   const navbarContent = document.querySelector("[data-te-collapse-item]");
-
-//   hamburgerButton.addEventListener("click", function () {
-//     // Toggle the visibility of the navbar content
-//     navbarContent.classList.toggle("hidden");
-//     navbarContent.classList.toggle("flex");
-//   });
-// });
-
 function showNotification(message, time) {
   if (time == undefined || time == null || time == 0) {
     time = 4000

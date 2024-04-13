@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Radictionary/kahoot/backend/internals/models"
+	"github.com/Radictionary/kahoot/internals/models"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -43,8 +43,6 @@ func (m *Repository) LoginRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionToken := uuid.NewString()
-	current_time := time.Now()
-	storedCreds.UserStatistics.LastLoggedIn = current_time.Format("03:04 PM 01/02/2006")
 	expiresAt := time.Now().Add(15 * time.Minute)
 	sessionData, err := json.Marshal(storedCreds)
 	if err != nil {
@@ -102,15 +100,13 @@ func (m *Repository) SignupRequest(w http.ResponseWriter, r *http.Request) {
 		log.Println("error storing user account:", err)
 		return
 	}
-	m.App.Session.Put(r.Context(), "flash", "Account Created")
 	w.WriteHeader(http.StatusOK)
 }
 
 func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 	_, loggedIn := getSessionData(r)
 	if !loggedIn {
-		m.App.Session.Put(r.Context(), "flash", "You are not logged in")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/?message=You+are+not+logged+in", http.StatusSeeOther)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
@@ -122,6 +118,5 @@ func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 		Secure:   m.App.InProduction,
 		SameSite: http.SameSiteLaxMode,
 	})
-	m.App.Session.Put(r.Context(), "flash", "Successfully logged out")
-	http.Redirect(w, r, "/login", http.StatusSeeOther)
+	http.Redirect(w, r, "/login?message=Successfully+logged+out", http.StatusSeeOther)
 }

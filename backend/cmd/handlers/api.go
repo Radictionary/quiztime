@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Radictionary/kahoot/backend/internals/game"
-	"github.com/Radictionary/kahoot/backend/internals/models"
-	"github.com/Radictionary/kahoot/backend/internals/render"
+	"github.com/Radictionary/kahoot/internals/game"
+	"github.com/Radictionary/kahoot/internals/models"
+	"github.com/Radictionary/kahoot/internals/render"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -33,13 +33,11 @@ func (m *Repository) Accounts(w http.ResponseWriter, r *http.Request) {
 	}
 	sessionData, _ := getSessionData(r)
 	if sessionData.Name != oldName {
-		m.App.Session.Put(r.Context(), "flash", "You are not authorized")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/?message=You+are+not+authorized", http.StatusSeeOther)
 		return
 	}
 	if sessionData.Password != oldAccount.Password {
-		m.App.Session.Put(r.Context(), "flash", "You are not authorized")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/?message=You+are+not+authorized", http.StatusSeeOther)
 		return
 	}
 	newAccount := models.Account{}
@@ -81,8 +79,7 @@ func (m *Repository) Game(w http.ResponseWriter, r *http.Request) {
 	case "GET": //serving html
 		currentAccount, _ := m.App.Redis.RetrieveUserAccount(account.Name)
 		if !currentAccount.AllowedGame(gameName) {
-			m.App.Session.Put(r.Context(), "flash", "You don't own this game!")
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			http.Redirect(w, r, "/message=You+don't+own+this+game!", http.StatusSeeOther)
 			return
 		}
 		game, _ := m.App.Redis.RetrieveGame(gameName)
@@ -114,8 +111,7 @@ func (m *Repository) Game(w http.ResponseWriter, r *http.Request) {
 	case "PUT":
 		currentAccount, _ := m.App.Redis.RetrieveUserAccount(account.Name)
 		if !currentAccount.AllowedGame(gameName) {
-			m.App.Session.Put(r.Context(), "flash", "You don't own this game!")
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			http.Redirect(w, r, "/?message=You+don't+own+this+game!", http.StatusSeeOther)
 			return
 		}
 		if strings.Contains(r.URL.String(), "/share") {

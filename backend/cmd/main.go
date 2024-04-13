@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Radictionary/kahoot/backend/cmd/handlers"
-	"github.com/Radictionary/kahoot/backend/internals/config"
-	"github.com/Radictionary/kahoot/backend/internals/game"
-	"github.com/Radictionary/kahoot/backend/internals/redis"
-	"github.com/Radictionary/kahoot/backend/internals/render"
+	"github.com/Radictionary/kahoot/cmd/handlers"
+	"github.com/Radictionary/kahoot/internals/config"
+	"github.com/Radictionary/kahoot/internals/game"
+	"github.com/Radictionary/kahoot/internals/redis"
+	"github.com/Radictionary/kahoot/internals/render"
 	"github.com/alexedwards/scs/v2"
 )
 

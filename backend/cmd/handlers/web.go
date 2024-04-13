@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Radictionary/kahoot/backend/internals/config"
-	"github.com/Radictionary/kahoot/backend/internals/game"
-	"github.com/Radictionary/kahoot/backend/internals/models"
-	"github.com/Radictionary/kahoot/backend/internals/render"
+	"github.com/Radictionary/kahoot/internals/config"
+	"github.com/Radictionary/kahoot/internals/game"
+	"github.com/Radictionary/kahoot/internals/models"
+	"github.com/Radictionary/kahoot/internals/render"
 	"github.com/go-chi/chi/v5"
 	qrcode "github.com/skip2/go-qrcode"
 )
@@ -72,21 +72,16 @@ func (m *Repository) Dashboard(w http.ResponseWriter, r *http.Request) {
 }
 func (m *Repository) Login(w http.ResponseWriter, r *http.Request) {
 	_, loggedIn := getSessionData(r)
-	flash, _ := m.App.Session.Pop(r.Context(), "flash").(string) //global flash
 
 	if loggedIn {
-		m.App.Session.Put(r.Context(), "flash", "Already Logged In")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/?message=Already+logged+in", http.StatusSeeOther)
 	}
-	render.RenderTemplate(w, "login.html", &models.TemplateData{
-		Flash: flash,
-	})
+	render.RenderTemplate(w, "login.html", &models.TemplateData{})
 }
 func (m *Repository) Signup(w http.ResponseWriter, r *http.Request) {
 	_, loggedIn := getSessionData(r)
 	if loggedIn {
-		m.App.Session.Put(r.Context(), "flash", "Already Logged In, Already Created An Account")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/?message=Already+logged+in,+already+created+an+account", http.StatusSeeOther)
 	}
 	render.RenderTemplate(w, "signup.html", &models.TemplateData{})
 }

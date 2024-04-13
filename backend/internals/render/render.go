@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/Radictionary/kahoot/backend/internals/config"
-	"github.com/Radictionary/kahoot/backend/internals/models"
+	"github.com/Radictionary/kahoot/internals/config"
+	"github.com/Radictionary/kahoot/internals/models"
 )
 
 var functions = template.FuncMap{}

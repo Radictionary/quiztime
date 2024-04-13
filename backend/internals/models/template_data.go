@@ -3,7 +3,7 @@ package models
 import (
 	"html/template"
 
-	"github.com/Radictionary/kahoot/backend/internals/game"
+	"github.com/Radictionary/kahoot/internals/game"
 )
 
 // TemplateData holds data sent from handlers to templates

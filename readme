@@ -1,2 +1,14 @@
-# Readme
+# Quiztime - hosted at quiztime.radinworld.com
 
+### A realtime quiz application which allows users to create their own quiz, then answer the questions live with other players in realtime.
+
+## Tech Stack
+### Frontend
+- HTML
+- CSS
+- Tailwind
+- JavaScript
+
+### Backend
+- Golang
+- Redis Database

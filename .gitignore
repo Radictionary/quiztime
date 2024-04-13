@@ -5,6 +5,8 @@
 /frontend/node_modules
 /frontend/.DS_store
 /logs
+.prettierrc
+dockerfile
 
 #remove auto-generated tailwind css file which should be generated before running using "npm run build:css"
 /frontend/css/tailwind.css 

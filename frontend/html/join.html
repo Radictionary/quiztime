@@ -1,13 +1,16 @@
 {{template "base" .}} {{define "content"}}
-<div class="overflow-hidden flex flex-col justfiy-center shrink-0 box-border items-center rounded-2xl text-center m-10 bg-purple-400 p-10">
+<div
+  class="overflow-hidden flex flex-col justfiy-center shrink-0 box-border items-center rounded-2xl text-center m-10 bg-purple-400 p-10">
   <h1 class="text-center text-5xl p-5">Join Game</h1>
   <form id="joinForm" class="bg-purple-400 p-14">
     <label for="name p-10">Your Name:</label>
-    <input type="text" id="name" name="name" required value="{{ index .Account.Name}}" autocomplete="off" class="rounded border box-border text-sm leading-snug w-full mb-3 p-2 rounded-tl border-b border-solid border-stone-300 border-l border-r border-t" />
+    <input type="text" id="name" name="name" required value="{{ index .Account.Name}}" autocomplete="off"
+      class="rounded border box-border text-sm leading-snug w-full mb-3 p-2 rounded-tl border-b border-solid border-stone-300 border-l border-r border-t" />
     <br />
     <div id="code">
       <label for="gameCode" id="gameCodeLabel">Game Pin:</label>
-      <input type="number" id="gameCode" name="gameCode" required autocomplete="off" class="rounded border box-border text-sm leading-snug w-full mb-3 p-2 rounded-tl border-b border-solid border-stone-300 border-l border-r border-t" />
+      <input type="number" id="gameCode" name="gameCode" required autocomplete="off"
+        class="rounded border box-border text-sm leading-snug w-full mb-3 p-2 rounded-tl border-b border-solid border-stone-300 border-l border-r border-t" />
       <br />
     </div>
     <div class="avatar-wrapper m-20 scale-75">
@@ -24,6 +27,41 @@
 </div>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 <script>
+
+  async function resizeImage(base64Str) {
+    return new Promise((resolve, reject) => {
+      // Create an Image object
+      const img = new Image();
+
+      // Setting the source of the image to the base64 string
+      img.src = base64Str;
+
+      // Handling image load
+      img.onload = () => {
+        // Create a canvas
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set the dimensions of the canvas to the new size
+        canvas.width = 10;
+        canvas.height = 10;
+
+        // Draw the image on the canvas at the new size
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Convert the canvas to a Base64 string
+        const newBase64 = canvas.toDataURL();
+
+        // Resolve the Promise with the new Base64 string
+        resolve(newBase64);
+      };
+
+      // Handling errors
+      img.onerror = (error) => {
+        reject(new Error("Failed to load the image and resize it."));
+      };
+    });
+  }
   const Name = "{{.Account.Name}}";
 
   const queryString = window.location.search;
@@ -37,7 +75,6 @@
     document.getElementById("gameCode").readOnly = true;
     document.getElementById("code").style.display = "none"
   }
-  // window.history.replaceState({}, document.title, url.split("?")[0]);
 
   document.getElementById("joinForm").addEventListener("submit", function (event) {
     event.preventDefault();
@@ -45,10 +82,14 @@
     const gameCode = document.getElementById("gameCode").value;
     const name = document.getElementById("name").value;
 
-    location.assign("/play/" + gameCode + "?name=" + name + "&picture=" + binaryData);
+    location.assign("/play/" + gameCode + "?name=" + name + "&picture=" + encodeURIComponent(resizedBase64));
   });
 
   let binaryData = "";
+  let resizedBase64 = "";
+  async function test() {
+    resizedBase64 = await resizeImage(originalBase64);
+  }
   document.addEventListener("DOMContentLoaded", function () {
     function readURL(input) {
       if (input.files && input.files[0]) {
@@ -60,7 +101,7 @@
           document.querySelector(".profile-pic").style.display = "block";
           document.querySelector(".profile-pic").src = e.target.result;
           // Get the binary data`
-          binaryData = encodeURIComponent(e.target.result.split(",")[1]); // Remove data:image/png;base64,
+          binaryData = e.target.result.split(",")[1]; // Remove data:image/png;base64,
 
           document.body.style.backgroundImage = `url(data:image/jpeg;base64,${e.target.result.split(",")[1]})`;
           document.body.style.backgroundPositionX = "center";

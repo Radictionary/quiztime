@@ -90,19 +90,27 @@
     </nav>
     {{block "content" .}} {{end}} {{block "js" .}} {{end}}
     <script>
-      const accountJSON = "{{index .AccountJSON}}";
+      //const accountJSON = "{{index .AccountJSON}}";
       const profilePictureSrc = "{{.ProfilePicture}}";
-      const flash = "{{.Flash }}";
-      if (flash != "" && flash != " ") {
-        showNotification(flash);
-      }
+      // const flash = "{{.Flash }}";
+      // if (flash != "" && flash != " ") {
+      //   showNotification(flash);
+      // }
       if (document.getElementById("logInText") != null) {
         document.getElementById("navbarSupportedContent1").style.display = "none";
       }
       if (window.location.pathname == "/" || window.location.pathname == "") {
         document.body.classList.add("overflow-y-hidden");
       }
-      // const urlParams = new URLSearchParams(queryString);
+
+      const url = new URL(window.location.href);
+      const message = url.searchParams.get("message");
+      if (message != null && message != "") {
+        showNotification(message);
+        url.searchParams.delete("message");
+        history.replaceState(null, null, url.toString());
+      }
+
     </script>
     <script src="/frontend/node_modules/flowbite/dist/flowbite.min.js"></script>
   </body>
